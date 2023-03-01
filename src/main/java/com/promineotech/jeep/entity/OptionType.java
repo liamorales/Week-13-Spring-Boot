@@ -1,5 +1,5 @@
 package com.promineotech.jeep.entity;
 
-public class OptionType {
+public enum OptionType {
 	 DOOR, EXTERIOR, INTERIOR, STORAGE, TOP, WHEEL
 }

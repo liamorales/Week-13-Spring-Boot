@@ -15,10 +15,10 @@ import java.util.List;
 
 public class DefaultJeepSalesService implements JeepSalesService {
 
-	@Autowired
+	
 	@Override
 	public List<Jeep>fetchJeeps(String model, String trim){
-		Log.info("the fetchJeeps method was called with model={} and trim ={}",
+		log.info("the fetchJeeps method was called with model={} and trim ={}",
 				model, trim);
 		return null;
 	}

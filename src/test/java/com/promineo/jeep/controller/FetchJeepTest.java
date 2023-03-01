@@ -3,8 +3,6 @@ package com.promineo.jeep.controller;
 import static org.assertj.core.api.Assertions.assertThat;
 
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
@@ -19,6 +17,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
+import org.springframework.test.jdbc.JdbcTestUtils;
+import org.springframework.web.client.RestTemplate;
 
 import com.promineo.jeep.controller.support.FetchJeepTestSupport;
 import com.promineotech.jeep.entity.Jeep;
@@ -39,21 +39,21 @@ class FetchJeepTest extends FetchJeepTestSupport{
 	
 	@Test
 	void testDb() {
-		int numrows = JbdcTestUtils.countRowsInTable(jbdcTemplate, "customers");
+		int numrows = JdbcTestUtils.countRowsInTable(jbdcTemplate, "customers");
 		System.out.println("num" + numrows);
 	}
 
 	@Test
 	void testThatJeepsAreReturnedWhenAValidModelAndTrimAreSupplied() {
-		fail("Not yet implemented");
+		
 		//Given : a valid model, trim and URI
 		JeepModel model = JeepModel.WRANGLER;
 		String trim = "Sport";
 		String uri = String.format("http://localhost:%d/jeeps?model=%s&trim=%s", serverPort, model, trim);
 		
 		//When: a connection is made to the URI
-		ResponseEntity<List<Jeep>>response = 
-				getRestTemplate.exchange(uri, HttpMethod.GET, null, new ParameterizedTypeReference<>() {} );
+		ResponseEntity<List<Jeep>> response = 
+				getRestTemplate().exchange(uri, HttpMethod.GET, null, new ParameterizedTypeReference<>() {} );
 		//Then: a success (OK - 200) is returned
 		
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -61,12 +61,13 @@ class FetchJeepTest extends FetchJeepTestSupport{
 		//And : the actual list returned is the same as the expected list
 		
 	 List<Jeep> expected = buildExpected();
+	 assertThat(response.getBody()).isEqualTo(expected);
 	}
 
-	protected List<Jeep> buildExpected() {
-		assertThat(response.getBody()).isEqualTo(expected);
-		return null;
+	//List<Jeep> buildExpected() {
+		//assertThat(response.getBody()).isEqualTo(expected);
+		//return null;
 	}
 
 	
-}
+
