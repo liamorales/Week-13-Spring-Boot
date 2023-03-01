@@ -1,11 +1,11 @@
-package com.promineo.jeep.service;
+package com.promineo.jeep.dao;
 
 import java.util.List;
 
 import com.promineotech.jeep.entity.Jeep;
 import com.promineotech.jeep.entity.JeepModel;
 
-public interface JeepSalesService {
+public interface JeepSalesDao {
 
 	/**
 	 * 
@@ -14,5 +14,7 @@ public interface JeepSalesService {
 	 * @return
 	 */
 	List<Jeep> fetchJeeps(JeepModel model, String trim);
+
+	List<Jeep> fetchJeeps(String model, String trim);
 
 }
