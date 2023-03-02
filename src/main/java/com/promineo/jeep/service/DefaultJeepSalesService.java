@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Slf4j 
 @Service
@@ -30,6 +31,12 @@ public class DefaultJeepSalesService implements JeepSalesService {
 		
 	List<Jeep> jeeps = jeepSalesDao.fetchJeeps(model, trim);
 	
+	if (jeeps.isEmpty()) {
+		String msg = String.format("No jeeps found with model=%s and trim=%s", 
+				model, trim);
+		
+		throw new NoSuchElementException(msg);
+	}
 	Collections.sort(jeeps);
 	return jeeps;
 	}
