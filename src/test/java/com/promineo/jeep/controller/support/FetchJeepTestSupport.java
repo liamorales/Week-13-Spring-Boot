@@ -44,7 +44,7 @@ public class FetchJeepTestSupport extends BaseTest {
 	 * @param status
 	 */
 
-	private void assertErrorMessageValid(Map<String, Object> error, 
+	protected void assertErrorMessageValid(Map<String, Object> error, 
 			HttpStatus status) {
 		//@formatter: off
 		assertThat(error)

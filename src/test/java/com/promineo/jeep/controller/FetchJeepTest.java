@@ -3,6 +3,8 @@ package com.promineo.jeep.controller;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.offset;
 
+import java.math.BigDecimal;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
@@ -19,6 +21,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -37,9 +41,9 @@ import com.promineotech.jeep.entity.Jeep;
 import com.promineotech.jeep.entity.JeepModel;
 
 
-class FetchJeepTest  {
+class FetchJeepTest {
 	
-	@Nested
+    @Nested
 	@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 	@ActiveProfiles("test")
 	@Sql(
@@ -47,7 +51,7 @@ class FetchJeepTest  {
 			"classpath:flyway/migrations/V1.0_Jeep_Schema.sql",
 			"classpath:flyway/migrations/V1.1_Jeep_Data.sql"},
 		config = @SqlConfig(encoding = "utf-8"))
-	class TestsThatDoNotPolluteTheApplicationContext extends FetchJeepTestSupport{
+	class TestsThatDoNotPolluteTheApplicationContext extends FetchJeepTestSupport  {
 		
 		@Test
 		void testThatJeepsAreReturnedWhenAValidModelAndTrimAreSupplied() {
@@ -56,7 +60,7 @@ class FetchJeepTest  {
 			JeepModel model = JeepModel.WRANGLER;
 			String trim = "Sport";
 			String uri = 
-					String.format("%s?model=%s&trim=%", getBaseUri(), model, trim);
+					String.format("%s?model=%s&trim=%", getBaseUriForJeeps(), model, trim);
 			
 			//When: a connection is made to the URI
 			ResponseEntity<List<Jeep>> response = 
@@ -81,7 +85,7 @@ class FetchJeepTest  {
 			JeepModel model = JeepModel.WRANGLER;
 			String trim = "Unknown Value";
 			String uri = 
-					String.format("%s?model=%s&trim=%",getBaseUri(), model, trim);
+					String.format("%s?model=%s&trim=%",getBaseUriForJeeps(), model, trim);
 			
 			//When: a connection is made to the URI
 			ResponseEntity<Map<String, Object>> response = 
@@ -105,7 +109,7 @@ class FetchJeepTest  {
 			//Given : a valid model, trim and URI
 			
 			String uri = 
-					String.format("%s?model=%s&trim=%", getBaseUri(), model, trim);
+					String.format("%s?model=%s&trim=%", getBaseUriForJeeps(), model, trim);
 			
 			//When: a connection is made to the URI
 			ResponseEntity<Map<String, Object>> response = 
@@ -132,7 +136,7 @@ class FetchJeepTest  {
 			//@formatter: on
 				);
 	}
-	@Nested
+	//@Nested
 	@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 	@ActiveProfiles("test")
 	@Sql(
@@ -151,7 +155,7 @@ class TestsThatPolluteTheApplicationContext extends FetchJeepTestSupport{
 			JeepModel model = JeepModel.WRANGLER;
 			String trim = "Invalid";
 			String uri = 
-					String.format("%s?model=%s&trim=%",getBaseUri(), model, trim);
+					String.format("%s?model=%s&trim=%",getBaseUriForJeeps(), model, trim);
 			
 			doThrow(new RuntimeException("Ouch!")).when(jeepSalesService)
 			.fetchJeeps(model, trim);
@@ -171,35 +175,14 @@ class TestsThatPolluteTheApplicationContext extends FetchJeepTestSupport{
 			assertErrorMessageValid(error, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
-
-	
-	/**
-	 * 
-	 */
-	
-	@Autowired
-	//private JdbcTemplate jbdcTemplate;
-	
-	
-	/*void testDb() {
-		int numrows = JdbcTestUtils.countRowsInTable(jbdcTemplate, "customers");
-		System.out.println("num" + numrows);
-	}*/
+}
 
 
-	private void assertErrorMessageValid(Map<String, Object> error, 
-			HttpStatus status) {
-		//@formatter: off
-		assertThat(error)
-		.containsKey("message")
-		.containsEntry("status code", status.value())
-		.containsEntry("uri", "/jeeps")
-		.containsKey("timestamp")
-		.containsEntry("reason", status.getReasonPhrase());
-		//@formatter: on
-	}
+	
+		
+	
 
-	}
+	
 
 	
 
